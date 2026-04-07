@@ -1,23 +1,26 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const startCronJobs = require('./cron/fineCalculator');
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 
-app.use('/api/books', require('./routes/books'));
-app.use('/api/members', require('./routes/members'));
-app.use('/api/transactions', require('./routes/transactions'));
+// Test route
+app.get("/", (req, res) => {
+  res.send("Digital Library Server Running");
+});
 
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-    startCronJobs();
-    app.listen(process.env.PORT, () =>
-      console.log(`Server running on port ${process.env.PORT}`)
-    );
-  })
-  .catch(err => console.error(err));
+.then(() => {
+  console.log("MongoDB Connected");
+})
+.catch(err => console.log(err));
+
+// PORT
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
